@@ -1,9 +1,8 @@
 # Import standard library
-import math
-import random
-from functools import partial
 
 # Import modules
+import math
+
 import numpy as np
 
 
@@ -30,32 +29,50 @@ def compute_velocity(swarm):
     max_iterations = swarm.options["max_iteration"]
     current_iteration = swarm.options["iteration"]
     # Compute for cognitive and social terms
+    c1 = 2.05
+    c2 = 2.05
+    c = c1 + c2
+
     cognitive = (
-        c1
-        * np.random.uniform(0, 1, swarm_size)
-        * (swarm.pbest_pos - swarm.position)
+            c1
+            * np.random.uniform(0, 1, swarm_size)
+            * (swarm.pbest_pos - swarm.position)
     )
     social = (
-        c2
-        * np.random.uniform(0, 1, swarm_size)
-        * (swarm.best_pos - swarm.position)
+            c2
+            * np.random.uniform(0, 1, swarm_size)
+            * (swarm.best_pos - swarm.position)
     )
     # Non-Linear
-    n = 1.2
-    w = 0.9 + 0.5 * (1 - current_iteration / max_iterations) ** n
-    velocity = (w * swarm.velocity) + cognitive + social
+    w = 0.9 - (0.5 * current_iteration) / max_iterations
+    # velocity = (w * swarm.velocity) + cognitive + social
+
+    k = 2 / abs(2 - c - math.sqrt(c ** 2 - 4 * c))
+    velocity = k * (swarm.velocity + cognitive + social)
 
     return velocity
 
 
 def compute_position(swarm):
+    bounds = swarm.options['bounds']
+    temp_position = swarm.position.copy()
+    temp_position += swarm.velocity
 
-    new_position = swarm.position.copy()
-    new_position += swarm.velocity
+    if bounds is not None:
+        temp_position = nearest(temp_position, bounds)
 
-    return new_position
+    position = temp_position
+    return position
 
 
 def compute_objective_function(swarm, objective_func):
-
     return objective_func(swarm.position)
+
+
+def nearest(position, bounds):
+    lb, ub = bounds
+    bool_greater = position > ub
+    bool_lower = position < lb
+    new_pos = np.where(bool_lower, lb, position)
+    new_pos = np.where(bool_greater, ub, new_pos)
+    return new_pos

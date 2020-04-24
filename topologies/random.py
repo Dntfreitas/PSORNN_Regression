@@ -1,17 +1,17 @@
 import random
 
 import numpy as np
-from pyswarms.backend.topology import Topology
 
 import operators as ops
+from topologies.topology import Topology
 
 
 class Random(Topology):
 
-    def __init__(self, static=True):
-        super(Random, self).__init__(static)
+    def __init__(self):
+        super(Random, self).__init__()
 
-    def compute_gbest(self, swarm, **kwargs):
+    def compute_gbest(self, swarm):
         self.neighbor_idx = random_nei(swarm.n_particles)
 
         idx_min = np.array(

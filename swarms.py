@@ -6,7 +6,6 @@ from attr.validators import instance_of
 
 @attrs
 class Swarm(object):
-
     # Required attributes
     position = attrib(type=np.ndarray, validator=instance_of(np.ndarray))
     velocity = attrib(type=np.ndarray, validator=instance_of(np.ndarray))

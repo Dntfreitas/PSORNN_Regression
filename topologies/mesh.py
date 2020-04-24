@@ -1,15 +1,15 @@
 import numpy as np
-from pyswarms.backend.topology import Topology
 
 import operators as ops
+from topologies.topology import Topology
 
 
 class Mesh(Topology):
 
-    def __init__(self, static=True):
-        super(Mesh, self).__init__(static)
+    def __init__(self):
+        super(Mesh, self).__init__()
 
-    def compute_gbest(self, swarm, **kwargs):
+    def compute_gbest(self, swarm):
         if self.neighbor_idx is None:
             self.neighbor_idx = mesh_nei(swarm.n_particles)
 

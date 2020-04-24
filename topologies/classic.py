@@ -1,9 +1,13 @@
 import numpy as np
 
 import operators as ops
+from topologies.topology import Topology
 
 
-class Classic:
+class Classic(Topology):
+
+    def __init__(self):
+        super(Classic, self).__init__()
 
     def compute_gbest(self, swarm):
 

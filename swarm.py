@@ -1,25 +1,31 @@
 import numpy as np
-from ann import ANN
+
+import ann.choice as choice
 import arch
-import util
 import operators
+import util
 
 
 class Swarm:
 
-    def __init__(self, swarm_topology, c1, c2, w, iterations, n_particles, velocity_str, precision, ann):
+    def __init__(self, swarm_topology, c1, c2, iterations, n_particles, precision, data_set,
+                 hidden_units):
         """
         **** ATTRIBUTES INITIALIZATION ****
         """
         self.topology = arch.topology(swarm_topology)  # Topology
-        self.options = {'c1': c1, 'c2': c2, 'w': w, 'strategy': velocity_str, 'iteration': 0,
-                        'max_iteration': iterations, 'precision': precision}  # Parameters
+        self.options = {'c1': c1, 'c2': c2, 'iteration': 0, 'max_iteration': iterations,
+                        'precision': precision, 'bounds': np.nan}  # Parameters
         self.iterations = iterations  # Number of iterations
         self.n_particles = n_particles  # Number of particles
         self.time_elapsed = np.nan  # Time elapsed
-        self.f = ann
-        self.dimensions = self.f.getDimension()
-        self.center = 2.4*self.f.getNInputs()
+        self.f = choice.getAnn(data_set)
+        self.f.set_n_hidden(hidden_units)
+        self.dimensions = self.f.get_dimension()
+        self.center = 2.4 * self.f.get_n_inputs()
+        max_bound = 30 * np.ones(self.dimensions)
+        min_bound = - max_bound
+        self.options['bounds'] = (min_bound, max_bound)
         """
         **** PARTICLES INITIALIZATION ****
         """
@@ -31,7 +37,7 @@ class Swarm:
         precision = self.options['precision']
         precision_stop = False
 
-        while (self.options['iteration'] < max_iterations or self.options['max_iteration'] == -1) and\
+        while (self.options['iteration'] < max_iterations or self.options['max_iteration'] == -1) and \
                 not precision_stop:
             # Step 1: Compute current fitness
             self.swarm.current_cost = self.f.compute(
@@ -52,6 +58,8 @@ class Swarm:
 
             # Increment the number of iterations
             self.options['iteration'] += 1
+
+            print("Best cost:", self.swarm.best_cost)
 
             if self.swarm.best_cost <= precision:
                 precision_stop = True

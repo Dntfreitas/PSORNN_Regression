@@ -1,20 +1,16 @@
 import numpy as np
 import pandas as pd
-from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
 from sklearn.metrics import r2_score
+from sklearn.model_selection import train_test_split
 
 
 class Ann:
 
-    def __init__(self, nInputs, nOutputs, nHidden, dataPath):
-        self.nInputs = nInputs
-        self.nOutputs = nOutputs
-        self.nHidden = nHidden
-        self.dataPath = dataPath
-
-        self.dimensions = (self.nInputs * self.nHidden) + \
-            (self.nHidden * self.nOutputs)
+    def __init__(self, n_inputs, n_outputs, data_path):
+        self.nInputs = n_inputs
+        self.nOutputs = n_outputs
+        self.dataPath = data_path
 
         # Data import
         self.dataSet = pd.read_csv(self.dataPath, sep=';')
@@ -26,13 +22,16 @@ class Ann:
         self.X_train, self.X_test, self.Y_train, self.Y_test = train_test_split(
             self.input, self.output, test_size=0.3)
 
-        self.index = self.nInputs * self.nHidden
-
-    def getDimension(self):
+    def get_dimension(self):
         return self.dimensions
 
-    def getNInputs(self):
+    def get_n_inputs(self):
         return self.nInputs
+
+    def set_n_hidden(self, n_hidden):
+        self.nHidden = n_hidden
+        self.index = self.nInputs * self.nHidden
+        self.dimensions = (self.nInputs * self.nHidden) + (self.nHidden * self.nOutputs)
 
     def compute(self, x):
         j = []

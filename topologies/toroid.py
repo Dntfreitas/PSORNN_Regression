@@ -1,44 +1,36 @@
 import numpy as np
-from pyswarms.backend.topology import Topology
 
 import operators as ops
+from topologies.topology import Topology
 
 
 class Toroid(Topology):
 
-    def __init__(self, static=True):
-        super(Toroid, self).__init__(static)
+    def __init__(self):
+        super(Toroid, self).__init__()
 
-    def compute_gbest(self, swarm, **kwargs):
-        try:
+    def compute_gbest(self, swarm):
+        if self.neighbor_idx is None:
+            self.neighbor_idx = toroid_nei(swarm.n_particles)
 
-            if self.neighbor_idx is None:
-                self.neighbor_idx = toroid_nei(swarm.n_particles)
+        idx_min = np.array(
+            [
+                swarm.pbest_cost[self.neighbor_idx[i]].argmin()
+                for i in range(len(self.neighbor_idx))
+            ]
+        )
+        best_neighbor = np.array(
+            [
+                self.neighbor_idx[i][idx_min[i]]
+                for i in range(len(self.neighbor_idx))
+            ]
+        ).astype(int)
 
-            idx_min = np.array(
-                [
-                    swarm.pbest_cost[self.neighbor_idx[i]].argmin()
-                    for i in range(len(self.neighbor_idx))
-                ]
-            )
-            best_neighbor = np.array(
-                [
-                    self.neighbor_idx[i][idx_min[i]]
-                    for i in range(len(self.neighbor_idx))
-                ]
-            ).astype(int)
+        # Obtain best cost and position
+        best_cost = np.min(swarm.pbest_cost[best_neighbor])
+        best_pos = swarm.pbest_pos[best_neighbor]
 
-            # Obtain best cost and position
-            best_cost = np.min(swarm.pbest_cost[best_neighbor])
-            best_pos = swarm.pbest_pos[best_neighbor]
-
-        except AttributeError:
-            self.rep.logger.exception(
-                "Please pass a Swarm class. You passed {}".format(type(swarm))
-            )
-            raise
-        else:
-            return best_pos, best_cost
+        return best_pos, best_cost
 
     def compute_velocity(self, swarm):
         return ops.compute_velocity(swarm)

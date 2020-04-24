@@ -1,10 +1,6 @@
-from ann import Ann
+from ann.ann import Ann
 
 
 class ANNRedWine(Ann):
     def __init__(self):
-        nInputs = 11
-        nOutputs = 1
-        nHidden = 10
-        dataPath = 'datasets\wine\red.csv'
-        super().__init__(nInputs, nOutputs, nHidden, dataPath)
+        super().__init__(11, 1, 'datasets/wine/red.csv')
