@@ -1,24 +1,15 @@
-function [result, bestNet, worstNet] = tmsr(dataset, nInputs, xLabel, yLabel, pltTitle, name)
+function [result, bestNet, worstNet] = regr(dataset, nInputs, name)
 
     nHidden = {4 7 10 12 15 20};
     nRep = 10;
     
     % Process the data
-    T = dataset(:,end)';
-    inputs = dataset(:,1:nInputs);
-    [m,~] = size(inputs);
-    X = cell(1,m);
-    for i = 1:m
-        X{1,i} = cell2mat({inputs{i,1:end}})';
-    end
+    t = dataset(:,end)';
+    x = dataset(:,1:nInputs)';
   
     % Set the optimization algorithm
     trainFcn = 'trainlm'; % Levenberg-Marquardt optimization algorithm
 
-    % Create a nonlinear autoregressive network with external input
-    inputDelays = 1:2;
-    feedbackDelays = 1:2;
-     
     % Initialise arrays for performance
     NET = cell(length(nHidden), nRep);
     MSE = zeros(length(nHidden), nRep);
@@ -32,14 +23,11 @@ function [result, bestNet, worstNet] = tmsr(dataset, nInputs, xLabel, yLabel, pl
             hiddenLayerSize = nHidden{i};
 
             % Create the ANN
-            net = narxnet(inputDelays,feedbackDelays,hiddenLayerSize,'open',trainFcn);
+            net = fitnet(hiddenLayerSize,trainFcn);
 
             % Set activation functions
             net.inputs{1}.processFcns = {'mapstd'}; 
             net.outputs{2}.processFcns = {'mapstd'};
-
-            % Prepare the data for training and simulation
-            [x,xi,ai,t] = preparets(net,X,{},T);
 
             % Setup division of data for training, validation, testing
             net.divideFcn = 'divideblock'; 
@@ -60,8 +48,7 @@ function [result, bestNet, worstNet] = tmsr(dataset, nInputs, xLabel, yLabel, pl
 
             % Setup initial weights
             net = configure(net,x,t);
-            net.IW{1,1} = initWeigths(nInputs, hiddenLayerSize, nInputs*2);
-            net.IW{1,2} = initWeigths(nInputs, hiddenLayerSize, 2);
+            net.IW{1,1} = initWeigths(nInputs, hiddenLayerSize, nInputs);
             net.LW{2,1} = initWeigths(nInputs, 1, hiddenLayerSize);
             
             % Export data
@@ -71,7 +58,7 @@ function [result, bestNet, worstNet] = tmsr(dataset, nInputs, xLabel, yLabel, pl
             save(strcat('weights/',name,'/',num2str(hiddenLayerSize),'/weights_init_',num2str(j),'.mat'),'iw', 'lw', 'b')
             
             % Train the network
-            [net,~] = train(net,x,t,xi,ai); 
+            [net,~] = train(net,x,t); 
             NET{i,j} = net;
             
             % Export data
@@ -81,13 +68,12 @@ function [result, bestNet, worstNet] = tmsr(dataset, nInputs, xLabel, yLabel, pl
             save(strcat('weights/',name,'/',num2str(hiddenLayerSize),'/weights_final_',num2str(j),'.mat'),'iw', 'lw', 'b')
 
             % Test the network and compute metrics
-            y = net(x,xi,ai);
+            y = net(x);
             e = gsubtract(t,y);
-            e = cell2mat(e);
             MSE(i,j) = mse(e);
             ssres = sum(e.^2);
-            ybar = mean(cell2mat(t));
-            sstot = sum((cell2mat(y)-ybar).^2);
+            ybar = mean(t);
+            sstot = sum(y-ybar).^2;
             rsq = 1 - (ssres/sstot);            
             R(i,j) = sqrt(rsq);
             clear net
@@ -123,42 +109,6 @@ function [result, bestNet, worstNet] = tmsr(dataset, nInputs, xLabel, yLabel, pl
     lw = worstNet.LW;
     b = worstNet.b;
     save(strcat('weights/',name,'/weights_worst.mat'),'iw', 'lw', 'b')
-
-    % Test the Network
-    y = bestNet(x,xi,ai);
-
-    % Closed loop network
-    netc = closeloop(bestNet);
-    [xc,xic,aic,~] = preparets(netc,X,{},T);
-    yc = netc(xc,xic,aic);
-
-    % Step-Ahead prediction
-    nets = removedelay(bestNet);
-    [xs,xis,ais,~] = preparets(nets,X,{},T);
-    ys = nets(xs,xis,ais);
-
-    % Arrange time series
-    ts0 = timeseries(cell2mat(T),1:length(X));
-    ts1 = timeseries(cell2mat(y),3:length(X));
-    ts2 = timeseries(cell2mat(yc),3:length(X));
-    ts3 = timeseries(cell2mat(ys),3:length(X)+1);
-
-    % Draw the plots
-    figure
-    plot(ts0)
-    hold on 
-    plot(ts1)
-    plot(ts2)
-    plot(ts3)
-    title(pltTitle)
-    xlabel(xLabel)
-    ylabel(yLabel)
-    legend({'Real','Open Loop','Closed Loop','Step-Ahead'}, 'Location','northwest')
-    grid on
-    hold off
-
-    % Save the plots
-    savefig(strcat('img/',name,'.fig'));
     
    return 
 
