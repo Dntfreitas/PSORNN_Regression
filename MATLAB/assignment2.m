@@ -1,7 +1,6 @@
 clear
 clc
-%% Number of neurons to test with
-num_neurons=[4,7,10,12,15,20];
+
 %% Brazil Dataset
 
 brazil_data=readtable('brazil.csv'); %Load the excel file
