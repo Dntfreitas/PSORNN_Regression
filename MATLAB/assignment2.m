@@ -6,10 +6,10 @@ clc
 brazil_data=readtable('./datasets/brazil.csv'); %Load the excel file
 
 % Splitting the data in to two time series X(t) and Y(t) as needed by NARX model
-X_brazil=brazil_data(:,1) % X(t) Extraction
+X_brazil=brazil_data(:,1); % X(t) Extraction
 X_brazil=X_brazil{:,:}; % Changing the table format to matrix for X(t)
 X_brazil=X_brazil-X_brazil(1); % Creating the reference point for X(t)
-X_brazil=rescale(X_brazil); % feature scaling X(t)
+X_brazil=rescale(X_brazil, 0, 1); % feature scaling X(t)
 
 Y_brazil=brazil_data(:,end);% Y(t) Extraction
 Y_brazil=str2double(Y_brazil{:,:});% Changing the table format to matrix for Y(t)

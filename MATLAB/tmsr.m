@@ -1,17 +1,8 @@
-function [result, bestNet, worstNet] = tmsr(dataset, nInputs, xLabel, yLabel, pltTitle, name)
+function [result, bestNet, worstNet] = tmsr(X, T, nInputs, xLabel, yLabel, pltTitle, name)
 
     nHidden = {4 7 10 12 15 20};
     nRep = 10;
-    
-    % Process the data
-    T = dataset(:,end)';
-    inputs = dataset(:,1:nInputs);
-    [m,~] = size(inputs);
-    X = cell(1,m);
-    for i = 1:m
-        X{1,i} = cell2mat({inputs{i,1:end}})';
-    end
-  
+     
     % Set the optimization algorithm
     trainFcn = 'trainlm'; % Levenberg-Marquardt optimization algorithm
 
