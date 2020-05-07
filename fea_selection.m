@@ -5,6 +5,9 @@ outputs = fish(:,7);
 [~,scores] = fsrftest(inputs, outputs);
 figure
 bar(scores)
+title("Univariate feature selection")
+xlabel("Features")
+ylabel("Scores")
 
 % 1) CIC0
 % 2) SM1_Dz(Z)
@@ -18,6 +21,9 @@ outputs = traffic(:, end);
 [~,scores] = fsrftest(inputs, outputs);
 figure
 bar(scores)
+title("Univariate feature selection")
+xlabel("Features")
+ylabel("Scores")
 
 % 3) Broken Truck
 % 10) Lack of electricity
@@ -32,6 +38,9 @@ outputs = milk(:, end);
 [~,scores] = fsrftest(inputs, outputs);
 figure
 bar(scores)
+title("Univariate feature selection")
+xlabel("Features")
+ylabel("Scores")
 
 % 1) Year
 
@@ -42,6 +51,9 @@ outputs = winered(:, end);
 [~,scores] = fsrftest(inputs, outputs);
 figure
 bar(scores)
+title("Univariate feature selection")
+xlabel("Features")
+ylabel("Scores")
 
 % 1) Fixed acidity
 % 2) Volatile acidity
@@ -56,9 +68,12 @@ bar(scores)
 inputs = winewhite(:, 1:11);
 outputs = winewhite(:, end);
 
-[idx,scores] = fsrftest(inputs, outputs);
+[~,scores] = fsrftest(inputs, outputs);
 figure
 bar(scores)
+title("Univariate feature selection")
+xlabel("Features")
+ylabel("Scores")
 
 % 3) Citric acid
 % 5) Chlorides

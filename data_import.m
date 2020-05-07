@@ -54,35 +54,3 @@ X_qsar=qsar_fish_tox(:,1:end-1);% X Extraction
 Y_qsar=qsar_fish_tox(:,1:end);% Y Extraction
 X_qsar=X_qsar{:,:};% Changing the table format to matrix for X
 Y_qsar=Y_qsar{:,:};% Changing the table format to matrix for Y
-
-
-
-%% Time-Series
-
-nInputs = 17;
-xLabel = 'Hour of day';
-yLabel = 'Slowness in traffic (%)';
-pltTitle = 'Urban Traffic in São Paulo - Brazil';
-name = 'traffic';
-[r2, bestNet2, worstNet2] = tmsr(traffic, nInputs, xLabel, yLabel, pltTitle, name);
-
-
-nInputs = 2;
-xLabel = 'Month';
-yLabel = 'Pounds per cow';
-pltTitle = 'Monthly Milk Production';
-name = 'milk';
-[r1, bestNet1, worstNet1] = tmsr(milk, nInputs, xLabel, yLabel, pltTitle, name);
-
-%% Regression
-nInputs = 6;
-name = 'fish';
-[r1, bestNet1, worstNet1] = regr(fish, nInputs, name);
-
-nInputs = 11;
-name = 'redWine';
-[r2, bestNet2, worstNet2] = regr(winered, nInputs, name);
-
-nInputs = 11;
-name = 'whiteWine';
-[r3, bestNet3, worstNet3] = regr(winewhite, nInputs, name);
