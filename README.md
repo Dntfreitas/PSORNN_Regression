@@ -1,16 +1,11 @@
-As future work, we are going to test the PSO algorithm with different parameters, different velocity update equations and different topologies of swarms.
+# Abstract:
+This paper analyses how the Levenberg--Marquardt backpropagation algorithm (LMA) and the Particle Swarm Optimisation (PSO) can be used as a training algorithm of Artificial Neural Networks. In this view, four data sets (two of them for time-series analysis and the other two for fitting applications) were tested with different ANN architectures. The comparison between the two algorithms was made in terms of lower Mean Squared Error (MSE) value and in terms of the coefficient  of  correlation (R). Our results showed that the LMA worked better for time-series analysis and PSO for data fitting tasks.
 
-Before using the algorithms to find the optimal ANN's weights, feature selection methods were used for this study and were based on the variance of each feature and on its rank based on its p-values of F-test statistics.
-
-Although for other data sets, combination of the average MSE and R value have suggested neural networks in the way that both were pointing to the same network architecture, this may not always be the case. Finally, it can be concluded that selection of algorithm is dependent on the type of task, as seen in the study.Abstract: 
-
-This work analyses how the Levenberg--Marquardt backpropagation algorithm (LMA) and the Particle Swarm Optimisation (PSO) can be used as a training algorithm of Artificial Neural Networks. In this view, four data sets (two of them for time-series analysis and the other two for fitting applications) were tested with different ANN architectures. The comparison between the two algorithms was made in terms of lower Mean Squared Error (MSE) value and in terms of the coefficient  of  correlation (R). Our results showed that the LMA worked better for time-series analysis and PSO for data fitting tasks.
-
-## Results:
+# Results:
 
 The experiments were conducted altering the number of neurons in the hidden layer. Two optimisation algorithms (Levenberg-Maquardt algorithm and Particle Swarm Optimisation) were used for both tasks. LMA worked better for time-series analysis and PSO for data fitting tasks. This could be due to the ability of PSO to handle high dimensionality of data than LMA. 
 
-On the one hand, the LMA algorithm was more stable than the PSO algorithm, especially in regression tasks; however, for the same accuracy, the PSO algorithm required a lower number of hidden units, as can be seen in the following table.
+On the one hand, the LMA algorithm was more stable than the PSO algorithm, especially in regression tasks; however, for the same accuracy, the PSO algorithm required a lower number of hidden units, as can be seen in the following table:
 
 |              | **LMA**        |              |       | **PSO**        |              |        |
 | ------------ | -------------- | ------------ | ----- | -------------- | ------------ | ------ |
