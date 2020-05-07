@@ -1,8 +1,9 @@
-# Abstract:
+# On the Use of the LMA and PSO for Time Series and Regression Tasks
+
+## Abstract:
 This paper analyses how the Levenberg--Marquardt backpropagation algorithm (LMA) and the Particle Swarm Optimisation (PSO) can be used as a training algorithm of Artificial Neural Networks. In this view, four data sets (two of them for time-series analysis and the other two for fitting applications) were tested with different ANN architectures. The comparison between the two algorithms was made in terms of lower Mean Squared Error (MSE) value and in terms of the coefficient  of  correlation (R). Our results showed that the LMA worked better for time-series analysis and PSO for data fitting tasks.
 
-# Results:
-
+## Results:
 The experiments were conducted altering the number of neurons in the hidden layer. Two optimisation algorithms (Levenberg-Maquardt algorithm and Particle Swarm Optimisation) were used for both tasks. LMA worked better for time-series analysis and PSO for data fitting tasks. This could be due to the ability of PSO to handle high dimensionality of data than LMA. 
 
 On the one hand, the LMA algorithm was more stable than the PSO algorithm, especially in regression tasks; however, for the same accuracy, the PSO algorithm required a lower number of hidden units, as can be seen in the following table:
