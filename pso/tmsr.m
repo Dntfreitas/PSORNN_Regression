@@ -24,7 +24,7 @@ function [result, bestNet, worstNet] = tmsr(dataset, nInputs, xLabel, yLabel, pl
     MSE = zeros(length(nHidden), nRep);
     R = zeros(length(nHidden), nRep);
     
-    for i = 1:length(nHidden)      
+     for i = 1:length(nHidden)      
 
         for j = 1:nRep
 
@@ -70,12 +70,16 @@ function [result, bestNet, worstNet] = tmsr(dataset, nInputs, xLabel, yLabel, pl
             save(strcat('weights/',name,'/',num2str(hiddenLayerSize),'/weights_final_',num2str(j),'.mat'),'net')
 
             % Test the network and compute metrics
-            y = net(testX',xi,ai);
-            e = gsubtract(testT',y);
-            MSE(i,j) = mse(e);
-            testT = cell2mat(testT);
-            y = cell2mat(y)';
-            Cyt = corrcoef(testT,y');
+            y = net(x,xi,ai);
+            for k = 1:length(testT)
+                if ~isnan(cell2mat(testT(k)))
+                    break
+                end
+            end            
+            y_pred = cell2mat(y(k:end));
+            y_true = cell2mat(testTargets(k:end));
+            MSE(i,j) = mse(y_pred-y_true);
+            Cyt = corrcoef(y_pred, y_true);
             R(i,j) = Cyt(2,1);
             clear net
         end

@@ -1,6 +1,6 @@
 function [result, bestNet, worstNet] = tmsr(dataset, nInputs, xLabel, yLabel, pltTitle, name)
 
-    nHidden = {4 7 10 12 15 20};
+    nHidden = {5 4 7 10 12 15 20};
     nRep = 10;
     
     % Process the data
@@ -68,7 +68,7 @@ function [result, bestNet, worstNet] = tmsr(dataset, nInputs, xLabel, yLabel, pl
             save(strcat('weights/',name,'/',num2str(hiddenLayerSize),'/weights_init_',num2str(j),'.mat'),'net')
             
             % Train the network
-            [net,~] = train(net,x,t,xi,ai); 
+            [net, tr] = train(net,x,t,xi,ai); 
             NET{i,j} = net;
             
             % Export data
@@ -76,12 +76,14 @@ function [result, bestNet, worstNet] = tmsr(dataset, nInputs, xLabel, yLabel, pl
 
             % Test the network and compute metrics
             y = net(x,xi,ai);
-            e = gsubtract(t,y);
-            e = cell2mat(e);
-            MSE(i,j) = mse(e);
-            t = cell2mat(t);
-            y = cell2mat(y);
-            Cyt = corrcoef(t,y);
+            testTargets = gmultiply(t,tr.testMask);
+            MSE(i,j) = perform(net,testTargets,y);
+            for k = 1:length(testTargets)
+                if ~isnan(cell2mat(testTargets(k)))
+                    break
+                end
+            end
+            Cyt = corrcoef(cell2mat(y(k:end)),cell2mat(testTargets(k:end)));
             R(i,j) = Cyt(2,1);
             clear net
         end

@@ -55,17 +55,18 @@ function [result, bestNet, worstNet] = regr(dataset, nInputs, name)
             save(strcat('weights/',name,'/',num2str(hiddenLayerSize),'/weights_init_',num2str(j),'.mat'),'net')
             
             % Train the network
-            [net,~] = train(net,x,t); 
+            [net,tr] = train(net,x,t); 
             NET{i,j} = net;
             
             % Export data
             save(strcat('weights/',name,'/',num2str(hiddenLayerSize),'/weights_final_',num2str(j),'.mat'),'net')
 
-            % Test the network and compute metrics
-            y = net(x);
-            e = gsubtract(t,y);
-            MSE(i,j) = mse(e);
-            Cyt = corrcoef(t,y);
+            % Test the network and compute metrics 
+            testInputs = gmultiply(x,tr.testMask);
+            testTargets = gmultiply(t,tr.testMask);
+            MSE(i,j) = perform(net,testTargets, t);
+            y_pred = net(testInputs);
+            Cyt =  corrcoef(rmmissing(y_pred{1,1}), rmmissing(testTargets{1,1}));
             R(i,j) = Cyt(2,1);
             clear net
         end
